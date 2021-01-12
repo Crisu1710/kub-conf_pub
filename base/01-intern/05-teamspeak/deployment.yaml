@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ts3-manager
+  namespace: teamspeak
+  labels:
+    environment: intern
+    app: ts3-manager
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ts3-manager
+  template:
+    metadata:
+      labels:
+        app: ts3-manager
+    spec:
+      containers:
+        - name: ts3-manager
+          image: joni1802/ts3-manager
+          ports:
+            - containerPort: 8080

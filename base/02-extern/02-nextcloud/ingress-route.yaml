@@ -1,0 +1,25 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: nextcloud-https
+  namespace: nextcloud
+  labels:
+    environment: extern
+    app: nextcloud
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`cloud.domain.tld`)
+      kind: Rule
+      services:
+        - name: nextcloud-service
+          port: 8088
+      middlewares:
+        - name: headers
+          namespace: traefik
+  tls:
+    certResolver: default
+    options:
+      name: tls
+      namespace: traefik

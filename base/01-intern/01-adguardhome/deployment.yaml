@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: adguardhome
+  namespace: adguardhome
+  labels:
+    environment: intern
+    app: adguardhome
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: adguardhome
+  template:
+    metadata:
+      labels:
+        app: adguardhome
+    spec:
+      hostNetwork: true
+      containers:
+        - name: adguardhome
+          image: adguard/adguardhome

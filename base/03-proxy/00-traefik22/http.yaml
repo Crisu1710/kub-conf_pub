@@ -1,0 +1,19 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: headers
+  namespace: traefik
+spec:
+  headers:
+    accessControlAllowOrigin: "*"
+    browserXssFilter: true
+    contentTypeNosniff: true
+    frameDeny: true
+    sslRedirect: true
+    #HSTS Configuration
+    stsIncludeSubdomains: true
+    stsPreload: true
+    stsSeconds: 15768000
+    customFrameOptionsValue: "SAMEORIGIN"
+    referrerPolicy: "same-origin"
+    featurePolicy: "vibrate 'self'"

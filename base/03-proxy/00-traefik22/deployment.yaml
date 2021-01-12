@@ -1,0 +1,112 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: traefik
+    release: traefik
+  name: traefik
+  namespace: traefik
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: traefik
+      release: traefik
+  template:
+    metadata:
+      labels:
+        app: traefik
+        release: traefik
+    spec:
+      volumes:
+      - name: vol
+        nfs:
+          server: 192.168.213.2
+          path: /mnt/data/traefik
+      containers:
+      - args:
+        - --api.insecure
+        - --accesslog
+        - --global.checknewversion=true
+        - --entryPoints.traefik.address=:8100
+        - --entryPoints.web.address=:80
+        - --entryPoints.websecure.address=:443
+        # Please note that this is the staging Let's Encrypt server configuration.
+        # Once you get things working, you should remove that following line.
+        # - --certificatesresolvers.default.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory
+        - --certificatesresolvers.default.acme.tlschallenge=true
+        - --certificatesresolvers.default.acme.email=m2rs@posteo.de
+        - --certificatesresolvers.default.acme.storage=config/acme.json
+        - --certificatesresolvers.default.acme.dnschallenge.provider=ovh
+        - --certificatesresolvers.default.acme.httpchallenge.entrypoint=web
+        - --certificatesresolvers.default.acme.dnschallenge.delaybeforecheck=10
+        - --api.dashboard=true
+        - --ping=true
+        - --providers.kubernetescrd
+        - --log.level=DEBUG
+        - --metrics.prometheus=true
+        env:
+        - name: OVH_ENDPOINT
+          value: "ovh-eu"
+        - name: OVH_APPLICATION_KEY
+          valueFrom:
+            secretKeyRef:
+              key: app-key
+              name: ovh-token
+        - name: OVH_APPLICATION_SECRET
+          valueFrom:
+            secretKeyRef:
+              key: app-secret
+              name: ovh-token
+        - name: OVH_CONSUMER_KEY
+          valueFrom:
+            secretKeyRef:
+              key: consumer-key
+              name: ovh-token
+        image: traefik:2.2.8
+        volumeMounts:
+        - name: vol
+          mountPath: /config
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /ping
+            port: 8100
+            scheme: HTTP
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 2
+        name: traefik
+        ports:
+        - containerPort: 8100
+          name: admin
+          protocol: TCP
+        - containerPort: 80
+          name: web
+          protocol: TCP
+        - containerPort: 443
+          name: websecure
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 1
+          httpGet:
+            path: /ping
+            port: 8100
+            scheme: HTTP
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 2
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      serviceAccount: traefik
+      serviceAccountName: traefik
+      terminationGracePeriodSeconds: 60

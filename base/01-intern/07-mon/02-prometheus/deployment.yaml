@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prometheus
+  namespace: mon
+  labels:
+    environment: mon
+    app: prometheus
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: prometheus
+  template:
+    metadata:
+      labels:
+        app: prometheus
+    spec:
+      volumes:
+        - name: vol
+          nfs:
+            server: 192.168.213.2
+            path: /mnt/data/prom
+      containers:
+        - name: prometheus
+          image: prom/prometheus
+          volumeMounts:
+            - name: vol
+              mountPath: /etc/prometheus/
+          ports:
+            - containerPort: 9090

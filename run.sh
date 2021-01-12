@@ -1,0 +1,1 @@
+kustomize build base | kubectl apply -f -

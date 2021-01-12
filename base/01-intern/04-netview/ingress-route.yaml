@@ -1,0 +1,35 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: netview
+  namespace: netview
+  labels:
+    environment: intern
+    app: netview
+spec:
+  entryPoints:
+    - web
+  routes:
+    - match: Host(`home.home`)
+      kind: Rule
+      services:
+        - name: netview-service
+          port: 8200
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: netview-api
+  namespace: netview
+  labels:
+    environment: intern
+    app: netview
+spec:
+  entryPoints:
+    - web
+  routes:
+    - match: Host(`api.home`)
+      kind: Rule
+      services:
+        - name: netview-service
+          port: 3001

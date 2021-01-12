@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grafana
+  namespace: grafana
+  labels:
+    environment: extern
+    app: grafana
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: grafana
+  template:
+    metadata:
+      labels:
+        app: grafana
+    spec:
+      volumes:
+        - name: vol
+          nfs:
+            server: 192.168.213.2
+            path: /mnt/data/grafana
+      containers:
+        - name: grafana
+          image: grafana/grafana
+          volumeMounts:
+            - name: vol
+              mountPath: /var/lib/grafana
+          ports:
+            - containerPort: 3000
+              name: web

@@ -1,0 +1,17 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: adguardhome-http
+  namespace: adguardhome
+  labels:
+    environment: intern
+    app: adguardhome
+spec:
+  entryPoints:
+    - web
+  routes:
+    - match: Host(`ad.home`)
+      kind: Rule
+      services:
+        - name: adguardhome-service
+          port: 3000

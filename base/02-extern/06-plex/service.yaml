@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: plex-service
+  namespace: plex
+  labels:
+    environment: extern
+    app: plex
+spec:
+  selector:
+    app: plex
+  type: ClusterIP
+  ports:
+    - targetPort: 32400
+      port: 32400
+      name: web-ui
+    - targetPort: 32469
+      port: 32469
+      name: one
+    - targetPort: 5353
+      port: 5353
+      name: two
+    - targetPort: 1900
+      port: 1900
+      name: tree

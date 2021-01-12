@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: teamspeak-service
+  namespace: teamspeak
+  labels:
+    environment: extern
+    app: teamspeak
+spec:
+  selector:
+    app: teamspeak
+  type: ClusterIP
+  ports:
+  - targetPort: 9987
+    port: 9987
+    name: tcp
+  - targetPort: 10011
+    port: 10011
+    name: udp

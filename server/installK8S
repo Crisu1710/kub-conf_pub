@@ -1,0 +1,127 @@
+############# Install Docker ###################
+
+yum install -y yum-utils device-mapper-persistent-data lvm2
+yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+yum remove podman-manpages
+yum -y install https://download.docker.com/linux/centos/7/x86_64/stable/Packages/containerd.io-1.2.10-3.2.el7.x86_64.rpm
+yum install docker-ce
+systemctl enable --now docker
+systemctl start docker
+usermod -aG docker $USER
+
+sudo systemctl stop firewalld
+sudo systemctl disable firewalld
+
+
+############  INSTALL KUBADM ################
+
+cat <<EOF > /etc/yum.repos.d/kubernetes.repo
+[kubernetes]
+name=Kubernetes
+baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
+enabled=1
+gpgcheck=1
+repo_gpgcheck=1
+gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+EOF
+
+yum install -y kubelet kubeadm kubectl --disableexcludes=kubernetes
+systemctl enable --now kubelet
+
+cat <<EOF > /etc/sysctl.d/k8s.conf
+net.bridge.bridge-nf-call-ip6tables = 1
+net.bridge.bridge-nf-call-iptables = 1
+EOF
+sysctl --system
+systemctl daemon-reload
+systemctl restart kubelet
+
+swapoff -a
+
+# vim /etc/fstab
+
+# vim /boot/cmdline.txt
+# cgroup_enable=cpuset cgroup_enable=memory
+
+
+kubeadm init
+export KUBECONFIG=/etc/kubernetes/admin.conf
+kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
+
+kubectl taint nodes --all node-role.kubernetes.io/master-
+
+export MASTER_IP=<master_ip>
+
+kubectl get node
+kubectl get pods --all-namespaces
+
+############################################################
+sudo cp /admin.conf $HOME/
+sudo chown $(id -u):$(id -g) $HOME/admin.conf
+export KUBECONFIG=$HOME/admin.conf
+kubectl create -f deploy.yaml
+
+
+
+kubectl delete deployment nginx-deployment
+kubectl create -f deploy.yaml
+kubectl get pods
+kubectl delete pods --all
+
+
+
+more ports
+
+  ports:
+- containerPort: 7000
+  name: intra-node
+- containerPort: 7001
+  name: tls-intra-node
+- containerPort: 7199
+  name: jmx
+- containerPort: 9042
+  name: cql
+#################### NginX #####################################
+
+kubectl run nginx --image=nginx
+kubectl expose deployment nginx --external-ip=$MASTER_IP --port=80 --target-port=80
+
+################ Deploying the Dashboard UI #####################
+
+# vim dashboard-adminuser.yaml
+#add
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: admin-user
+  namespace: kubernetes-dashboard
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: admin-user
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+- kind: ServiceAccount
+  name: admin-user
+  namespace: kubernetes-dashboard
+
+kubectl -n kubernetes-dashboard describe secret $(kubectl -n kubernetes-dashboard get secret | grep admin-user | awk '{print $1}')
+
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0-beta8/aio/deploy/recommended.yaml
+kubectl proxy
+#client ssh -L 8001:localhost:8001 root@IP
+
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+iptables -P FORWARD ACCEPT
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+######################### install HELM #####################
+
+curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
+chmod 700 get_helm.sh
+./get_helm.sh
+helm repo add stable https://kubernetes-charts.storage.googleapis.com/

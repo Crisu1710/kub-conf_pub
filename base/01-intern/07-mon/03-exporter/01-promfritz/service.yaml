@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: promfritz-service
+  namespace: mon
+spec:
+  selector:
+    app: promfritz
+  type: ClusterIP
+  ports:
+    - targetPort: 9133
+      port: 9133

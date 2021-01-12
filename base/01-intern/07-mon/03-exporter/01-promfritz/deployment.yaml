@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: promfritz
+  namespace: mon
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: promfritz
+  template:
+    metadata:
+      labels:
+        app: promfritz
+    spec:
+      hostNetwork: true
+      containers:
+        - name: promfritz
+          image: bachp/fritzbox_exporter
+          ports:
+            - containerPort: 9133

@@ -1,0 +1,34 @@
+useradd -M -r -s /bin/false node_exporter
+
+wget https://github.com/prometheus/node_exporter/releases/download/v0.18.1/node_exporter-0.18.1.linux-amd64.tar.gz -P /tmp
+cd /tmp
+tar xzf node_exporter-0.18.1.linux-amd64.tar.gz
+
+cp node_exporter-0.18.1.linux-amd64/node_exporter /usr/local/bin/
+chown node_exporter:node_exporter /usr/local/bin/node_exporter
+
+
+vim /etc/systemd/system/node_exporter.service
+
+[Unit]
+Description=Prometheus Node Exporter
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+User=node_exporter
+Group=node_exporter
+Type=simple
+ExecStart=/usr/local/bin/node_exporter
+
+[Install]
+WantedBy=multi-user.target
+
+
+
+systemctl daemon-reload
+systemctl enable --now node_exporter.service
+
+
+firewall-cmd --add-rich-rule 'rule family="ipv4" source address="192.168.43.250/32" port port=9100 protocol=tcp accept' --permanent
+firewall-cmd --reload

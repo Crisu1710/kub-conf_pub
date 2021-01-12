@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: maria
+  namespace: db
+  labels:
+    environment: intern
+    app: maria
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: maria
+  template:
+    metadata:
+      labels:
+        app: maria
+    spec:
+      volumes:
+        - name: vol
+          nfs:
+            server: 192.168.213.2
+            path: /mnt/data/maria
+      containers:
+        - name: maria
+          image: mariadb
+          volumeMounts:
+            - name: vol
+              mountPath: /var/lib/mysql
+          ports:
+            - containerPort: 3306
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: password
+                  name: db-passwd

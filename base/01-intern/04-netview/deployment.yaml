@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: netview
+  namespace: netview
+  labels:
+    environment: intern
+    app: netview
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: netview
+  template:
+    metadata:
+      labels:
+        app: netview
+    spec:
+      containers:
+        - name: netview
+          image: crisu1710/netview
+          ports:
+            - containerPort: 5000
+              name: web
+            - containerPort: 3000
+              name: api
+          env:
+            - name: SQL_HOST
+              value: "mysql.db"
+            - name: SQL_PW
+              valueFrom:
+                secretKeyRef:
+                  key: password
+                  name: db-passwd
+            - name: VUE_APP_BOTURL
+              value: "api.home"
+          livenessProbe:
+            tcpSocket:
+              port: 3000
+            initialDelaySeconds: 15
+            periodSeconds: 20
