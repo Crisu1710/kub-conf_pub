@@ -5,3 +5,9 @@ resources:
   - deployment.yaml
   - service.yaml
   - ingress-route.yaml
+
+configMapGenerator:
+  - name: prometheus
+    namespace: mon
+    files:
+      - prometheus.yml
