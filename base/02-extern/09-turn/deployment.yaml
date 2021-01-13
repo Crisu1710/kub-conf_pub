@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: turn-deploy
+  namespace: turn
+  labels:
+    environment: extern
+    app: turn
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: turn
+  template:
+    metadata:
+      labels:
+        app: turn
+    spec:
+      containers:
+        - name: turn
+          image: boldt/coturn
+          ports:
+            - containerPort: 3478
+              name: main
+          env:
+            - name: USERNAME
+              value: "admin"
+            - name: PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: password
+                  name: turn-passwd
