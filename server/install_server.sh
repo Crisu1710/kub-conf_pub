@@ -10,7 +10,7 @@ yum config-manager --set-enabled PowerTools
 yum install -y container-selinux selinux-policy-base
 rpm -i https://rpm.rancher.io/k3s-selinux-0.1.1-rc1.el7.noarch.rpm
 export INSTALL_K3S_VERSION="v1.18.12+k3s1"
-curl -sfL https://get.k3s.io | sh -s - --disable traefik --kubelet-arg=allowed-unsafe-sysctls=
+curl -sfL https://get.k3s.io | sh -s - --disable traefik #--kubelet-arg=allowed-unsafe-sysctls=
 yum install vim
 yum install htop
 yum install tar
