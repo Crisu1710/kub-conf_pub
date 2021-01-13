@@ -1,4 +1,4 @@
-#FIRST RUN
+# FIRST RUN
 
 [Deploying the Kubernetes Dashboard](https://rancher.com/docs/k3s/latest/en/installation/kube-dashboard/)
 

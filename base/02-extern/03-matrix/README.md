@@ -1,4 +1,4 @@
-#FIRST RUN
+# FIRST RUN
 
 ```
 docker run -it --rm \
