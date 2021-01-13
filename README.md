@@ -1,6 +1,8 @@
 # MY K3s/K8s CONFIG
 (server/install_server is designed for CentOS 8)
 
+[MY WAY TO INSTALL K3s](https://github.com/Crisu1710/k3s_pub/edit/main/server/install_server.sh)
+
 ### you need to install
 
 [Kustomize](https://kubectl.docs.kubernetes.io/installation/kustomize/)
