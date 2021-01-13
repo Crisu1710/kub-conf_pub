@@ -3,7 +3,7 @@
 
 ### you need to install
 
-[Kustomization](https://kubectl.docs.kubernetes.io/installation/kustomize/)
+[Kustomize](https://kubectl.docs.kubernetes.io/installation/kustomize/)
 
 #### change your passwords in kustomization.yaml
 
