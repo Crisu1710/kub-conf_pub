@@ -13,4 +13,4 @@ spec:
   ports:
     - targetPort: 3478
       port: 3478
-      name: web
+      name: main

@@ -18,15 +18,14 @@ spec:
     spec:
       containers:
         - name: turn
-          image: boldt/coturn
+          image: crisu1710/turn_server
           ports:
             - containerPort: 3478
               name: main
           env:
-            - name: USERNAME
+            - name: TURN_USER
               value: "admin"
-            - name: PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  key: password
-                  name: turn-passwd
+            - name: TURN_PASSWD
+              value: ""
+            - name: TURN_REALM
+              value: ""
