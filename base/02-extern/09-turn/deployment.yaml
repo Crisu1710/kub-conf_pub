@@ -16,12 +16,10 @@ spec:
       labels:
         app: turn
     spec:
+      hostNetwork: true
       containers:
         - name: turn
           image: crisu1710/turn_server
-          ports:
-            - containerPort: 3478
-              name: main
           env:
             - name: TURN_USER
               value: "admin"
