@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ts3-manager
+  name: ts3-manager-deploy
   namespace: teamspeak
   labels:
     environment: intern

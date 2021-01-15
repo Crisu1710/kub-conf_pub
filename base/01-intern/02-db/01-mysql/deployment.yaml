@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mysql
+  name: mysql-deploy
   namespace: db
   labels:
     environment: intern
@@ -21,6 +21,10 @@ spec:
           nfs:
             server: 192.168.213.2
             path: /mnt/data/sql
+        - name: backup
+          nfs:
+            server: 192.168.213.2
+            path: /mnt/data/db-backup/mysql
       containers:
         - name: mysql
           image: mysql:8.0
@@ -38,17 +42,15 @@ spec:
         - name: mysql-backup
           image: fradelg/mysql-cron-backup
           volumeMounts:
-            - name: vol
+            - name: backup
               mountPath: /backup
-          ports:
-            - containerPort: 3306
           env:
             - name: MYSQL_HOST
               value: "localhost"
             - name: MYSQL_USER
               value: "root"
             - name: CRON_TIME
-              value: "0 3 * * *"
+              value: "0 1 * * *"
             - name: MYSQL_PASS
               valueFrom:
                 secretKeyRef:

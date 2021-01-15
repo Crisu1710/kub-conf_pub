@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: postgres
+  name: postgres-deploy
   namespace: db
   labels:
     environment: intern
@@ -21,6 +21,10 @@ spec:
           nfs:
             server: 192.168.213.2
             path: /mnt/data/postgres
+        - name: backup
+          nfs:
+            server: 192.168.213.2
+            path: /mnt/data/db-backup/pg
       containers:
         - name: postgres
           image: postgres
@@ -35,24 +39,22 @@ spec:
                 secretKeyRef:
                   key: password
                   name: db-passwd
-        - name: postgres-backup
-          image: dexxter1911/cron-pg_dump
-          volumeMounts:
-            - name: vol
-              mountPath: /backup
-          ports:
-            - containerPort: 3306
-          env:
-            - name: PGUSER
-              value: "postgres"
-            - name: PGHOST
-              value: "localhost"
-            - name: PGDB
-              value: "synapse"
-            - name: CRON_SCHEDULE
-              value: "0 3 * * *"
-            - name: PGPASSWORD
-              valueFrom:
-                secretKeyRef:
-                  key: password
-                  name: db-passwd
+#        - name: postgres-backup
+#          image: dexxter1911/cron-pg_dump
+#          volumeMounts:
+#            - name: backup
+#              mountPath: /backup
+#          env:
+#            - name: PGUSER
+#              value: "postgres"
+#            - name: PGHOST
+#              value: "localhost"
+#            - name: PGDB
+#              value: "synapse"
+#            - name: CRON_SCHEDULE
+#              value: "0 1 * * *"
+#            - name: PGPASSWORD
+#              valueFrom:
+#                secretKeyRef:
+#                  key: password
+#                  name: db-passwd

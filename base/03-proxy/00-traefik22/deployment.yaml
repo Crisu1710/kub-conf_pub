@@ -4,7 +4,7 @@ metadata:
   labels:
     app: traefik
     release: traefik
-  name: traefik
+  name: traefik-deploy
   namespace: traefik
 
 spec:

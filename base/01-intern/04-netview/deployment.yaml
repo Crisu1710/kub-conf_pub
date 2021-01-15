@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: netview
+  name: netview-deploy
   namespace: netview
   labels:
     environment: intern

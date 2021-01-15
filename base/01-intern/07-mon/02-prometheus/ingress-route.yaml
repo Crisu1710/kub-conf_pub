@@ -10,5 +10,5 @@ spec:
     - match: Host(`prom.home`)
       kind: Rule
       services:
-        - name: prometheus
+        - name: prometheus-service
           port: 9099

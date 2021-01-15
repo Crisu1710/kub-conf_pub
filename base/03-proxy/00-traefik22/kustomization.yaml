@@ -12,7 +12,7 @@ resources:
 
 secretGenerator:
   - name: ovh-token
-    namespace: db
+    namespace: traefik
     literals:
       - app-key=...
       - app-secret=...

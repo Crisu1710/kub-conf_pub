@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: plex
+  name: plex-deploy
   namespace: plex
   labels:
     environment: extern
@@ -36,15 +36,15 @@ spec:
               mountPath: /data
             - name: media
               mountPath: /data/media
-          ports:
-            - containerPort: 32400
-              name: web-ui
-            - containerPort: 32469
-              name: one
-            - containerPort: 5353
-              name: two
-            - containerPort: 1900
-              name: tree
+#          ports:
+#            - containerPort: 32400
+#              name: web-ui
+#            - containerPort: 32469
+#              name: one
+#            - containerPort: 5353
+#              name: two
+#            - containerPort: 1900
+#              name: tree
           env:
             - name: PUID
               value: "1020"

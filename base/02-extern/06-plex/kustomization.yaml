@@ -8,6 +8,6 @@ resources:
 
 secretGenerator:
   - name: plex-token
-    namespace: db
+    namespace: plex
     literals:
       - claim=claim-...

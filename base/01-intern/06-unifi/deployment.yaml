@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: unifi
+  name: unifi-deploy
   namespace: unifi
   labels:
     environment: intern

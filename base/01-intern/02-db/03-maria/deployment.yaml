@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: maria
+  name: maria-deploy
   namespace: db
   labels:
     environment: intern

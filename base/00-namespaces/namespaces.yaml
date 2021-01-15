@@ -93,3 +93,19 @@ metadata:
   labels:
     environment: extern
     app: traefik
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: teamspeak
+  labels:
+    environment: extern
+    app: teamspeak
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: kubernetes-dashboard
+  labels:
+    environment: extern
+    app: kubernetes-dashboard

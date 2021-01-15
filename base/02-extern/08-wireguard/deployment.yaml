@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: wireguard
+  name: wireguard-deploy
   namespace: wireguard
   labels:
     environment: extern
