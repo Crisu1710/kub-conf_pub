@@ -10,7 +10,7 @@ spec:
   entryPoints:
     - websecure
   routes:
-    - match: Host(`turn.robins.run`)
+    - match: Host(`turn.domain.tld`)
       kind: Rule
       services:
         - name: turn-service

@@ -10,4 +10,4 @@ secretGenerator:
   - name: db-passwd
     namespace: db
     literals:
-      - password=########
+      - password=passwd

@@ -5,7 +5,7 @@ metadata:
   namespace: traefik
 spec:
   headers:
-    accessControlAllowOrigin: "*"
+    # accessControlAllowOrigin: "*"
     browserXssFilter: true
     contentTypeNosniff: true
     frameDeny: true

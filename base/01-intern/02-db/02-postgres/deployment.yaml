@@ -48,7 +48,7 @@ spec:
 #            - name: PGUSER
 #              value: "postgres"
 #            - name: PGHOST
-#              value: "localhost"
+#              value: "postgres-service.db"
 #            - name: PGDB
 #              value: "synapse"
 #            - name: CRON_SCHEDULE

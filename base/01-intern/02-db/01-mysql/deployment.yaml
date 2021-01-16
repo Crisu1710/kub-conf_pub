@@ -46,7 +46,7 @@ spec:
               mountPath: /backup
           env:
             - name: MYSQL_HOST
-              value: "localhost"
+              value: "mysql-service.db"
             - name: MYSQL_USER
               value: "root"
             - name: CRON_TIME
