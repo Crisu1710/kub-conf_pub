@@ -28,6 +28,11 @@ spec:
       containers:
         - name: postgres
           image: postgres
+#          securityContext:
+#            runAsUser: 999
+#          args:
+#            - pg_resetwal
+#            - /var/lib/postgresql/data
           volumeMounts:
             - name: vol
               mountPath: /var/lib/postgresql/data
@@ -39,22 +44,23 @@ spec:
                 secretKeyRef:
                   key: password
                   name: db-passwd
-#        - name: postgres-backup
-#          image: dexxter1911/cron-pg_dump
-#          volumeMounts:
-#            - name: backup
-#              mountPath: /backup
-#          env:
-#            - name: PGUSER
-#              value: "postgres"
-#            - name: PGHOST
-#              value: "postgres-service.db"
-#            - name: PGDB
-#              value: "synapse"
-#            - name: CRON_SCHEDULE
-#              value: "0 1 * * *"
-#            - name: PGPASSWORD
-#              valueFrom:
-#                secretKeyRef:
-#                  key: password
-#                  name: db-passwd
+        - name: postgres-backup
+          image: dexxter1911/cron-pg_dump
+          args: ["dump-cron"]
+          volumeMounts:
+            - name: backup
+              mountPath: /dump
+          env:
+            - name: PGUSER
+              value: "postgres"
+            - name: PGHOST
+              value: "postgres-service.db"
+            - name: PGDB
+              value: "synapse"
+            - name: CRON_SCHEDULE
+              value: "0 1 * * *"
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: password
+                  name: db-passwd

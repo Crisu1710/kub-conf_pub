@@ -11,3 +11,4 @@ configMapGenerator:
     namespace: mon
     files:
       - prometheus.yml
+      - my.rules.yml
