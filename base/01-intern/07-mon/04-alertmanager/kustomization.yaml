@@ -6,8 +6,8 @@ resources:
   - service.yaml
   - ingress-route.yaml
 
-secretGenerator:
-  - name: db-passwd
-    namespace: netview
-    literals:
-      - password=passwd
+configMapGenerator:
+  - name: prometheus
+    namespace: mon
+    files:
+      - prometheus.yml

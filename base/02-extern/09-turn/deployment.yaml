@@ -1,29 +1,43 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: turn-deploy
+  name: coturn
   namespace: turn
-  labels:
-    environment: extern
-    app: turn
 spec:
-  replicas: 1
   selector:
     matchLabels:
-      app: turn
+      app: coturn
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:
-        app: turn
+        app: coturn
     spec:
       hostNetwork: true
       containers:
-        - name: turn
-          image: crisu1710/turn_server
+        - image: dexxter1911/dynamic-coturn:latest
+          name: turn
           env:
-            - name: TURN_USER
-              value: "admin"
-            - name: TURN_PASSWD
-              value: ""
-            - name: TURN_REALM
-              value: ""
+            - name: TURN_CONFIG
+              value: /etc/coturn.conf
+            - name: CHECK_INTERVAL
+              value: "500"
+          volumeMounts:
+            - name: cert
+              mountPath: /var/run/secret
+              readOnly: true
+            - name: conf
+              mountPath: /etc/coturn.conf
+              subPath: coturn.conf
+      volumes:
+        - name: cert
+          nfs:
+            server: 192.168.213.2
+            path: /mnt/data/tsl
+        - name: conf
+          configMap:
+            name: coturn-conf
+            items:
+              - key: coturn.conf
+                path: coturn.conf

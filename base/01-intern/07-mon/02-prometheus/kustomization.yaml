@@ -11,4 +11,14 @@ configMapGenerator:
     namespace: mon
     files:
       - prometheus.yml
-      - my.rules.yml
+  - name: rules
+    namespace: mon
+    files:
+      - rules/cadvisor.rules.yml
+      - rules/default.rules.yml
+      - rules/k8s.rules.yml
+      - rules/prom.rules.yml
+      - rules/traefik.rules.yml
+
+
+

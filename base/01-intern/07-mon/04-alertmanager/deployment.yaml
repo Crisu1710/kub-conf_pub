@@ -1,35 +1,30 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: prometheus-deploy
+  name: alertmanager-deploy
   namespace: mon
   labels:
     environment: mon
-    app: prometheus
+    app: alertmanager
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: prometheus
+      app: alertmanager
   template:
     metadata:
       labels:
-        app: prometheus
+        app: alertmanager
     spec:
       volumes:
         - name: config-volume
           configMap:
-            name: prometheus
-        - name: rules-volume
-          configMap:
-            name: rules
+            name: alertmanager
       containers:
-        - name: prometheus
-          image: prom/prometheus
+        - name: alertmanager
+          image: prom/alertmanager
           volumeMounts:
             - name: config-volume
               mountPath: /etc/prometheus/
-            - name: rules-volume
-              mountPath: /etc/prometheus/rules/
           ports:
             - containerPort: 9090

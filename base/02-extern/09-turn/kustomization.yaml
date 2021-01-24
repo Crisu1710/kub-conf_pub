@@ -3,5 +3,4 @@ kind: Kustomization
 
 resources:
   - deployment.yaml
-  - service.yaml
-  - ingress-route.yaml
+  - coturn-conf.yml
