@@ -9,5 +9,5 @@ resources:
   - 05-jellyfin
   - 06-plex
   - 07-teamspeak
- # - 09-turn
+  - 09-turn
  # - 08-wireguard

@@ -20,7 +20,11 @@ scrape_configs:
   - job_name: 'k3s'
     static_configs:
       - targets: ['192.168.213.2:9100']
-  
+
+  - job_name: 'OPNsense'
+    static_configs:
+      - targets: [ '192.168.213.1:9273', '192.168.213.1:9100' ]
+
   - job_name: 'kube-state-metrics'
     static_configs:
       - targets: ['kube-state-metrics.kube-system:8080']
@@ -31,29 +35,25 @@ scrape_configs:
 
   - job_name: 'cadvisor'
     scheme: https
-    metrics_path: /api/v1/nodes/localhost.localdomain/proxy/metrics/cadvisor
+    metrics_path: /api/v1/nodes/k3s-main/proxy/metrics/cadvisor
     tls_config:
       ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
     basic_auth:
       username: admin
-      password:
+      password: passwd
     static_configs:
       - targets: ['192.168.213.2:6443']
 
   - job_name: 'apiserver'
     scheme: https
-    metrics_path: /api/v1/nodes/localhost.localdomain/proxy/metrics
+    metrics_path: /api/v1/nodes/k3s-main/proxy/metrics
     tls_config:
       ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
     basic_auth:
       username: admin
-      password:
+      password: passwd
     static_configs:
       - targets: ['192.168.213.2:6443']
-
-  - job_name: 'FritzBox'
-    static_configs:
-      - targets: ['promfritz-service.mon:9133']
 
   - job_name: 'TRAEFIK'
     static_configs:
@@ -63,6 +63,7 @@ scrape_configs:
     static_configs:
       - targets:
         - 192.168.213.10  # SNMP device.
+       #- 192.168.213.254
     metrics_path: /snmp
     params:
       module: [if_mib]
@@ -72,4 +73,4 @@ scrape_configs:
       - source_labels: [__param_target]
         target_label: instance
       - target_label: __address__
-        replacement: 192.168.213.3:9116  # The SNMP exporter's real hostname:port.
+        replacement: snmp-service.mon:9116  # The SNMP exporter's real hostname:port.

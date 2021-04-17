@@ -5,6 +5,8 @@ resources:
   - 01-mysql
   - 02-postgres
  # - 03-maria
+  - 04-influxdb
+  - 05-elastic
 
 secretGenerator:
   - name: db-passwd

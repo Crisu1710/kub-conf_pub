@@ -16,26 +16,25 @@ spec:
       labels:
         app: netview
     spec:
+      volumes:
+        - name: vol
+          nfs:
+            server: NFS-Server #TODO
+            path: /mnt/data/netview
       containers:
         - name: netview
           image: crisu1710/netview
           ports:
             - containerPort: 5000
               name: web
-            - containerPort: 3000
-              name: api
           env:
-            - name: SQL_HOST
-              value: "mysql-service.db"
-            - name: SQL_PW
-              valueFrom:
-                secretKeyRef:
-                  key: password
-                  name: db-passwd
-            - name: VUE_APP_BOTURL
+            - name: VUE_APP_API_URL
               value: "api.home"
-          livenessProbe:
-            tcpSocket:
-              port: 3000
-            initialDelaySeconds: 15
-            periodSeconds: 20
+        - name: netview-server
+          image: crisu1710/netview-server
+          volumeMounts:
+            - name: vol
+              mountPath: /api/conf
+          ports:
+            - containerPort: 8090
+              name: web
