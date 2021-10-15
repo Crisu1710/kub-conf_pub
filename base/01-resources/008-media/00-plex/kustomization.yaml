@@ -10,4 +10,4 @@ secretGenerator:
   - name: plex-token
     namespace: plex
     literals:
-      - claim=claim-tfHMq-cYmSsJkJPH_Xv1
+      - claim=claim- #TODO
