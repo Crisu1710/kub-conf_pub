@@ -5,14 +5,6 @@ metadata:
   labels:
     environment: intern
     app: db
-#---
-#apiVersion: v1
-#kind: Namespace
-#metadata:
-#  name: netview
-#  labels:
-#    environment: extern
-#    app: grafana
 ---
 apiVersion: v1
 kind: Namespace
