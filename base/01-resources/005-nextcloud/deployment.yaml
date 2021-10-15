@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nextcloud-deploy
+  namespace: nextcloud
+  labels:
+    environment: extern
+    app: nextcloud
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nextcloud
+  template:
+    metadata:
+      labels:
+        app: nextcloud
+    spec:
+      volumes:
+        - name: vol
+          nfs:
+            server: NODE_IP #TODO
+            path: /mnt/data/cloud
+        - name: data
+          nfs:
+            server: NODE_IP #TODO
+            path: /mnt/main/cloud
+      containers:
+        - name: nextcloud
+          image: nextcloud
+          volumeMounts:
+            - name: vol
+              mountPath: /var/www/html
+            - name: data
+              mountPath: /var/www/data
+          ports:
+            - containerPort: 80
+              name: web
+          env:
+            - name: NEXTCLOUD_TRUSTED_DOMAINS
+              value: "cloud.example.tld"

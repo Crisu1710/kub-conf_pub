@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: minecraft-deploy
+  namespace: minecraft
+  labels:
+    environment: extern
+    app: minecraft
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: minecraft
+  template:
+    metadata:
+      labels:
+        app: minecraft
+    spec:
+      hostNetwork: true
+      volumes:
+        - name: vol
+          nfs:
+            server: NODE_IP #TODO
+            path: /mnt/data/minecraft
+      containers:
+        - name: minecraft
+          image: itzg/minecraft-server
+          volumeMounts:
+            - name: vol
+              mountPath: /data
+          ports:
+            - containerPort: 25565
+              name: server
+          env:
+            - name: EULA
+              value: "TRUE"
+            - name: OPS
+              value: "Crisu1710"
+            - name: ONLINE_MODE
+              value: "FALSE"

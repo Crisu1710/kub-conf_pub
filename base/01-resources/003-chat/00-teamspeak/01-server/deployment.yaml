@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: teamspeak-deploy
+  namespace: teamspeak
+  labels:
+    environment: extern
+    app: teamspeak
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: teamspeak
+  template:
+    metadata:
+      labels:
+        app: teamspeak
+    spec:
+      hostNetwork: true
+      volumes:
+        - name: vol
+          nfs:
+            server: NODE_IP #TODO
+            path: /mnt/data/ts3
+      containers:
+        - name: teamspeak
+          image: teamspeak
+          volumeMounts:
+            - name: vol
+              mountPath: /var/ts3server
+          ports:
+            - containerPort: 9987
+              name: tcp
+            - containerPort: 10011
+              name: udp
+            - containerPort: 30033
+              name: two
+          env:
+            - name: TS3SERVER_LICENSE
+              value: "accept"

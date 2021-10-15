@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grafana-deploy
+  namespace: grafana
+  labels:
+    environment: extern
+    app: grafana
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: grafana
+  template:
+    metadata:
+      labels:
+        app: grafana
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "3000"
+    spec:
+      volumes:
+        - name: grafana-ini
+          configMap:
+            name: grafana-ini
+        - name: novatec-service-dependency-graph-panel
+          emptyDir: {}
+      containers:
+        - name: grafana
+          image: grafana/grafana
+          env:
+            - name: GF_INSTALL_PLUGINS
+              value: btplc-alarm-box-panel,btplc-status-dot-panel,btplc-trend-box-panel,btplc-trend-box-panel,grafana-clock-panel,grafana-piechart-panel,grafana-worldmap-panel,magnesium-wordcloud-panel,michaeldmoore-annunciator-panel,michaeldmoore-multistat-panel,petrslavotinek-carpetplot-panel,ryantxu-ajax-panel,vonage-status-panel
+          volumeMounts:
+            - mountPath: /etc/grafana/
+              name: grafana-ini
+            - mountPath: /var/lib/grafana/plugins/novatec-sdg-panel
+              name: novatec-service-dependency-graph-panel
+          ports:
+            - containerPort: 3000
+              name: web
+      initContainers:
+        - name: plugin-downloader
+          image: grafana/grafana
+          command: ['sh', '-c', "cd /tmp/plugins && wget -c https://github.com/NovatecConsulting/novatec-service-dependency-graph-panel/releases/download/v4.0.2/novatec-sdg-panel.zip && unzip novatec-sdg-panel.zip && mv novatec-sdg-panel/* . && rm -rf novatec-sdg-panel novatec-sdg-panel.zip"]
+          volumeMounts:
+            - mountPath: /tmp/plugins/
+              name: novatec-service-dependency-graph-panel

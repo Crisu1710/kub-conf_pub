@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres-deploy
+  namespace: db
+  labels:
+    environment: intern
+    app: postgres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      volumes:
+        - name: vol
+          nfs:
+            server: NODE_IP #TODO
+            path: /mnt/data/postgres
+        - name: backup
+          nfs:
+            server: NODE_IP #TODO
+            path: /mnt/data/db-backup/pg
+      containers:
+        - name: postgres
+          image: postgres:13.4
+#          securityContext:
+#            runAsUser: 999
+#          args:
+#            - pg_resetwal
+#            - /var/lib/postgresql/data
+          volumeMounts:
+            - name: vol
+              mountPath: /var/lib/postgresql/data
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: password
+                  name: db-passwd
+        - name: postgres-backup
+          image: dexxter1911/cron-pg_dump
+          args: ["dump-cron"]
+          volumeMounts:
+            - name: backup
+              mountPath: /dump
+          env:
+            - name: PGUSER
+              value: "postgres"
+            - name: PGHOST
+              value: "postgres-service.db"
+            - name: PGDB
+              value: "synapse"
+            - name: CRON_SCHEDULE
+              value: "0 1 * * *"
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: password
+                  name: db-passwd

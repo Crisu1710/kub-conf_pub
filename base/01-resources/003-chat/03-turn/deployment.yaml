@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: coturn
+  #namespace: turn
+  namespace: cert-manager
+spec:
+  selector:
+    matchLabels:
+      app: coturn
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: coturn
+    spec:
+      hostNetwork: true
+      containers:
+        - image: dexxter1911/dynamic-coturn:latest
+          name: turn
+          env:
+            - name: TURN_CONFIG
+              value: /etc/coturn.conf
+            - name: CHECK_INTERVAL
+              value: "500"
+          volumeMounts:
+            - name: cert
+              mountPath: /var/run/secret
+              readOnly: true
+            - name: conf
+              mountPath: /etc/coturn.conf
+              subPath: coturn.conf
+      volumes:
+        - name: cert
+          secret:
+            secretName: example-tld-cert #TODO
+        - name: conf
+          configMap:
+            name: coturn-conf
+            items:
+              - key: coturn.conf
+                path: coturn.conf

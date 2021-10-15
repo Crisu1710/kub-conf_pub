@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: plex-ingress
+  namespace: plex
+  labels:
+    environment: extern
+    app: plex
+spec:
+  tls:
+    - hosts:
+        - plex.example.tld
+  rules:
+    - host: plex.example.tld
+      http:
+        paths:
+          - pathType: Prefix
+            path: /
+            backend:
+              service:
+                name: plex-service
+                port:
+                  number: 32400

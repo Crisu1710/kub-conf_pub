@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: maria-service
+  namespace: db
+  labels:
+    environment: intern
+    app: maria
+spec:
+  externalIPs:
+    - NODE_IP #TODO
+  selector:
+    app: maria
+  type: NodePort
+  ports:
+    - targetPort: 3306
+      port: 3307
+      nodePort: 30306

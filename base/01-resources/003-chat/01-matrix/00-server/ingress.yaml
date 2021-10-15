@@ -1,0 +1,30 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: matrix-ingress
+  namespace: matrix
+  labels:
+    environment: extern
+    app: matrix
+spec:
+  tls:
+    - hosts:
+        - matrix.example.tld
+  rules:
+    - host: "matrix.example.tld"
+      http:
+        paths:
+          - pathType: Prefix
+            path: /
+            backend:
+              service:
+                name: matrix-service
+                port:
+                  number: 8448
+          - pathType: Prefix
+            path: /.well-known
+            backend:
+              service:
+                name: delegation-service
+                port:
+                  number: 8449

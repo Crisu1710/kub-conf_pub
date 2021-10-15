@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: influx-deploy
+  namespace: db
+  labels:
+    environment: intern
+    app: influx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: influx
+  template:
+    metadata:
+      labels:
+        app: influx
+    spec:
+      volumes:
+        - name: vol
+          nfs:
+            server: NODE_IP #TODO
+            path: /mnt/data/influx
+      containers:
+        - name: influx
+          image: influxdb
+          volumeMounts:
+            - name: vol
+              mountPath: /var/lib/influxdb
+          ports:
+            - containerPort: 8086
+          env:
+            - name: INFLUXDB_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: password
+                  name: db-passwd

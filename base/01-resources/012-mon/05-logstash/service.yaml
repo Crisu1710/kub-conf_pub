@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: prometheus-service
+  namespace: mon
+  labels:
+    environment: mon
+    app: prometheus
+spec:
+  selector:
+    app: prometheus
+  type: ClusterIP
+  ports:
+    - targetPort: 5140
+      port: 5140
+      protocol: UDP
+      name: logs
+    - targetPort: 5040
+      port: 5040
+      name: logstash
+    - targetPort: 9600
+      port: 9600
+      name: main

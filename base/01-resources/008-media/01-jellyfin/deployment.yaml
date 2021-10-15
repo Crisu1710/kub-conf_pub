@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jellyfin-deploy
+  namespace: jellyfin
+  labels:
+    environment: extern
+    app: jellyfin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jellyfin
+  template:
+    metadata:
+      labels:
+        app: jellyfin
+    spec:
+      hostNetwork: true
+      volumes:
+        - name: vol
+          nfs:
+            server: NODE_IP #TODO
+            path: /mnt/data/jellyfin
+        - name: media
+          nfs:
+            server: NODE_IP #TODO
+            path: /mnt/main
+      containers:
+        - name: jellyfin
+          image: jellyfin/jellyfin
+          volumeMounts:
+            - name: vol
+              mountPath: /config
+            - name: vol
+              mountPath: /cache
+            - name: media
+              mountPath: /media

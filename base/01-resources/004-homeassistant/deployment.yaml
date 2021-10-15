@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: homeassistant-deploy
+  namespace: homeassistant
+  labels:
+    environment: extern
+    app: homeassistant
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: homeassistant
+  template:
+    metadata:
+      labels:
+        app: homeassistant
+    spec:
+      hostNetwork: true
+      volumes:
+        - name: vol
+          nfs:
+            server: NODE_IP #TODO
+            path: /mnt/data/shome
+      containers:
+        - name: homeassistant
+          image: homeassistant/home-assistant:2021.10
+          volumeMounts:
+            - name: vol
+              mountPath: /config
+          ports:
+            - containerPort: 8123
+              name: websecure

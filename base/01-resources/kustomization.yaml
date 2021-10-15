@@ -1,0 +1,16 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+#  - 001-adguardhome
+  - 002-db
+  - 003-chat
+  - 004-homeassistant
+  - 005-nextcloud
+  - 006-grafana
+  - 007-netview
+  - 008-media
+#  - 009-minecraft
+#  - 010-syncthing
+#  - 011-unifi
+  - 012-mon

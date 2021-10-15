@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: syncthing-deploy
+  namespace: syncthing
+  labels:
+    environment: intern
+    app: syncthing
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: syncthing
+  template:
+    metadata:
+      labels:
+        app: syncthing
+    spec:
+      hostNetwork: true
+      volumes:
+        - name: conf
+          nfs:
+            server: NODE_IP #TODO
+            path: /mnt/data/syncthing
+        - name: vol
+          nfs:
+            server: NODE_IP #TODO
+            path: /mnt/main/syncthing
+      containers:
+        - name: syncthing
+          image: linuxserver/syncthing
+          volumeMounts:
+            - name: conf
+              mountPath: /config
+            - name: vol
+              mountPath: /data1
+          env:
+            - name: PUID
+              value: "0"
+            - name: PGID
+              value: "0"
+#          ports:
+#            - containerPort: 8384
+#              name: web
+#            - containerPort: 22000
+#              name: a
+#            - containerPort: 21027
+#              protocol: UDP
+#              name: b

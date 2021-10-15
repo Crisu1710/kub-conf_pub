@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nextcloud-ingress
+  namespace: nextcloud
+  labels:
+    environment: extern
+    app: nextcloud
+spec:
+  tls:
+    - hosts:
+        - cloud.example.tld
+  rules:
+    - host: cloud.example.tld
+      http:
+        paths:
+          - pathType: Prefix
+            path: /
+            backend:
+              service:
+                name: nextcloud-service
+                port:
+                  number: 8088

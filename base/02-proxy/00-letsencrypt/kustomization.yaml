@@ -1,0 +1,15 @@
+---
+kind: Kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+commonLabels:
+  environment: reverse-proxy
+resources:
+  - clusterissuer.yaml
+  - certificate.yaml
+  - role.yaml
+
+secretGenerator:
+  - name: ovh-credentials
+    namespace: cert-manager
+    literals:
+      - applicationSecret= #TODO

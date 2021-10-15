@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: jellyfin-ingress
+  namespace: jellyfin
+  labels:
+    environment: extern
+    app: jellyfin
+spec:
+  tls:
+    - hosts:
+        - jellyfin.example.tld
+  rules:
+    - host: jellyfin.example.tld
+      http:
+        paths:
+          - pathType: Prefix
+            path: /
+            backend:
+              service:
+                name: jellyfin-service
+                port:
+                  number: 8096

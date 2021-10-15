@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: logstash-deploy
+  namespace: mon
+  labels:
+    environment: mon
+    app: logstash
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: logstash
+  template:
+    metadata:
+      labels:
+        app: logstash
+    spec:
+      volumes:
+        - name: vol
+          nfs:
+            server: NODE_IP #TODO
+            path: /mnt/data/pfelk
+        - name: conf
+          nfs:
+            server: NODE_IP #TODO
+            path: /mnt/data/logstash
+      containers:
+        - name: logstash
+          image: logstash:7.10.1
+          volumeMounts:
+            - name: vol
+              mountPath: /etc/pfelk
+            - name: conf
+              mountPath: /usr/share/logstash/config
+          ports:
+            - containerPort: 5140
+              protocol: UDP
+              name: logs
+            - containerPort: 5040
+              name: logstash
+            - containerPort: 9600
+              name: main
+          env:
+            - name: LS_JAVA_OPTS
+              value: -Xms8G -Xmx8G

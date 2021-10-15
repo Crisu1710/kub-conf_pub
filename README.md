@@ -1,7 +1,4 @@
-# MY K3s/K8s CONFIG
-(server/install_server is designed for CentOS 8)
-
-[MY WAY TO INSTALL K3s](https://github.com/Crisu1710/k3s_pub/edit/main/server/install_server.sh)
+# MY K8s CONFIG
 
 ### you need to install
 
@@ -15,7 +12,7 @@ vim base/03-proxy/00-traefik22/kustomization.yaml
 vim base/02-extern/06-plex/kustomization.yaml
 ```
 
-### replace all *.domain.tld with your own domain
+### replace all *.example.tld with your own domain
 
 ### install and run
 

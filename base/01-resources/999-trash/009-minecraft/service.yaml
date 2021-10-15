@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: minecraft-service
+  namespace: minecraft
+  labels:
+    environment: extern
+    app: minecraft
+spec:
+  selector:
+    app: minecraft
+  type: ClusterIP
+  ports:
+    - targetPort: 25565
+      port: 25565
+      name: server

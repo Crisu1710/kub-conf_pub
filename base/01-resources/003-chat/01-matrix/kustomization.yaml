@@ -2,6 +2,7 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 resources:
-  - 00-namespaces
-  - 01-resources
-  - 02-proxy
+  - 00-server
+  - 01-delegation
+  #- 02-wa-bride
+  - 04-admin-ui
